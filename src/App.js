@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 
 function App() {
@@ -7,8 +7,21 @@ function App() {
   const [width, setWidth] = useState(720);
   const [height, setHeight] = useState(480);
 
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      const element = ref.current;
+      const frame = element.querySelector(".frame").contentWindow;
+      frame.addEventListener("resize", (event) => {
+        setWidth(event.target.innerWidth);
+        setHeight(event.target.innerHeight);
+      });
+    }
+  }, [ref]);
+
   return (
-    <div className="App">
+    <div className="App" ref={ref}>
       <div className="header">
         <input
           type="number"
@@ -35,8 +48,7 @@ function App() {
       <div className="res-frame">
         <iframe
           src={gotoLink}
-          width={width}
-          height={height}
+          style={{ width: `${width}px`, height: `${height}px` }}
           title="site to check"
           className="frame"
         />
